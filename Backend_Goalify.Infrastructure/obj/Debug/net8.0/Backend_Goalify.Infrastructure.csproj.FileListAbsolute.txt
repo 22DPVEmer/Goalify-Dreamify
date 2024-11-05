@@ -1,0 +1,15 @@
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\bin\Debug\net8.0\Backend_Goalify.Infrastructure.deps.json
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\bin\Debug\net8.0\Backend_Goalify.Infrastructure.dll
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\bin\Debug\net8.0\Backend_Goalify.Infrastructure.pdb
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\bin\Debug\net8.0\Backend_Goalify.Core.dll
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\bin\Debug\net8.0\Backend_Goalify.Core.pdb
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.AssemblyInfo.cs
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_.D4AB76F0.Up2Date
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.dll
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\refint\Backend_Goalify.Infrastructure.dll
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\Backend_Goalify.Infrastructure.pdb
+C:\Users\Dog star\OneDrive\Dokumenti\Goalify\Backend\Backend_Goalify.Infrastructure\obj\Debug\net8.0\ref\Backend_Goalify.Infrastructure.dll
