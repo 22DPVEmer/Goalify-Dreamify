@@ -8,7 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Backend_Goalify.Application.Services;
 using Microsoft.OpenApi.Models;
-
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -92,23 +93,47 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
-var app = builder.Build();
-app.UseMiddleware<ErrorHandlingMiddleware>();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Add Rate Limiting
+builder.Services.AddRateLimiter(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: context.User.Identity?.Name ?? context.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 30,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
+
+// Add Email Service
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+var app = builder.Build();
+
+// Add this database initialization code
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+        
+        // Ensure database is created and migrations are applied
+        context.Database.Migrate();
+        
+        // Optional: Seed initial data
+        // await DataSeeder.SeedData(context, userManager, roleManager);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
 }
 
-app.UseHttpsRedirection();
-app.UseCors("AllowReactApp");
-app.UseAuthentication();
-app.UseAuthorization();
-
-
-
-app.MapControllers();
-
-app.Run();
+// ...rest of your existing app configuration code...

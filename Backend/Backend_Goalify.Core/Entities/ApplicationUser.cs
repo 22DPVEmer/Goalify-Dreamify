@@ -13,8 +13,14 @@ namespace Backend_Goalify.Core.Entities
         public bool IsAdmin { get; set; }
         public bool IsBanned { get; set; }
         public DateTime? LastLogin { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpiryTime { get; set; }
+        public string? EmailVerificationToken { get; set; }
+        public DateTime? EmailVerificationTokenExpiry { get; set; }
+        public string? PasswordResetToken { get; set; }
+        public DateTime? PasswordResetTokenExpiry { get; set; }
 
-        // Navigation properties}
+        // Navigation properties
         public ICollection<GoalEntry> GoalEntries { get; set; }
         public ICollection<Tag> Tags { get; set; }
         public ICollection<Comment> Comments { get; set; }
@@ -22,8 +28,8 @@ namespace Backend_Goalify.Core.Entities
         public ICollection<CommentLikes> CommentLikes { get; set; }
         public ICollection<Moderator> Moderators { get; set; }
         public ICollection<Notification> Notifications { get; set; }
+        public ICollection<IdentityUserRole<string>> UserRoles { get; set; }
         
-
         public ApplicationUser()
         {
             GoalEntries = new HashSet<GoalEntry>();
@@ -33,6 +39,7 @@ namespace Backend_Goalify.Core.Entities
             CommentLikes = new HashSet<CommentLikes>();
             Moderators = new HashSet<Moderator>();
             Notifications = new HashSet<Notification>();
+            UserRoles = new HashSet<IdentityUserRole<string>>();
         }
     }
-} 
+}
