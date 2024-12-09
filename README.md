@@ -42,4 +42,4 @@ dotnet ef migrations add <MigrationName> --startup-project ../Backend_Goalify.AP
 4. Run the backend server:
 ```
 dotnet watch run
-``
+```
