@@ -30,3 +30,16 @@ Make sure you have the following installed:
 1. Navigate to the backend project directory:
    ```bash
    cd Backend_Goalify.API
+   ```
+2. Apply database migrations:
+   ```
+   dotnet ef database update --startup-project ../Backend_Goalify.API
+   ```
+3. Add a new migration (if needed):
+```
+dotnet ef migrations add <MigrationName> --startup-project ../Backend_Goalify.API
+```
+4. Run the backend server:
+```
+dotnet watch run
+``
