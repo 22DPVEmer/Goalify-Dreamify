@@ -107,33 +107,26 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
-// Add Email Service
+/*
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddScoped<IEmailService, EmailService>();
-
+*/
 var app = builder.Build();
-
-// Add this database initialization code
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    var roles = new[] { "Admin", "Moderator", "Premium", "Basic" };
+
+    foreach (var role in roles)
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        
-        // Ensure database is created and migrations are applied
-        context.Database.Migrate();
-        
-        // Optional: Seed initial data
-        // await DataSeeder.SeedData(context, userManager, roleManager);
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating the database.");
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
     }
 }
+// Add this database initialization code
 
 // ...rest of your existing app configuration code...

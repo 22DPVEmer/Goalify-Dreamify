@@ -48,12 +48,15 @@ namespace Backend_Goalify.API.Controllers
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
             var result = await _authService.RefreshTokenAsync(request.Token);
+            
             if (!result.success)
                 return Unauthorized(new { message = result.message });
 
-            return Ok(new { Token = result.token });
+            // Assuming the Result class has a Data property that contains the new token and refresh token
+            return Ok(new { Token = result.data.Token, RefreshToken = result.data.RefreshToken });
         }
-
+        /*
+        
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
         {
@@ -84,7 +87,7 @@ namespace Backend_Goalify.API.Controllers
 
             return Ok(new { message = "Email verified successfully" });
         }
-
+    */
         [Authorize(Roles = "Admin")]
         [HttpPost("assign-role")]
         public async Task<IActionResult> AssignRole([FromBody] AssignRoleRequest request)
