@@ -13,14 +13,17 @@ using Microsoft.AspNetCore.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Configure identity
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JWT"));
 
+// Configure identity options
 builder.Services.Configure<IdentityOptions>(options =>
 {
     options.Password.RequireDigit = true;
@@ -30,6 +33,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequireLowercase = true;
 });
 
+// Configure authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -50,11 +54,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Goalify API", Version = "v1" });
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme",
@@ -90,6 +95,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader());
 });
 
+// Add scoped services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
@@ -107,11 +113,10 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
-/*
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-builder.Services.AddScoped<IEmailService, EmailService>();
-*/
+// Build the application
 var app = builder.Build();
+
+// Initialize roles
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -127,6 +132,23 @@ using (var scope = app.Services.CreateScope())
         }
     }
 }
-// Add this database initialization code
 
-// ...rest of your existing app configuration code...
+// Configure middleware
+app.UseRouting();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseCors("AllowReactApp");
+
+// Enable Swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Goalify API V1");
+    c.RoutePrefix = string.Empty; // Set to empty to serve Swagger UI at the app's root
+});
+
+// Map controllers
+app.MapControllers();
+
+// Run the application
+app.Run();

@@ -16,12 +16,12 @@ namespace Backend_Goalify.API.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IEmailService _emailService;
+        //private readonly IEmailService _emailService;
 
-        public AuthController(IAuthService authService, IEmailService emailService)
+        public AuthController(IAuthService authService)
         {
             _authService = authService;
-            _emailService = emailService;
+            //_emailService = emailService;
         }
 
         [HttpPost("register")]
@@ -52,7 +52,7 @@ namespace Backend_Goalify.API.Controllers
             if (!result.success)
                 return Unauthorized(new { message = result.message });
 
-            // Assuming the Result class has a Data property that contains the new token and refresh token
+            
             return Ok(new { Token = result.data.Token, RefreshToken = result.data.RefreshToken });
         }
         /*
