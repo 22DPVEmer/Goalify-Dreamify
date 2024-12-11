@@ -60,5 +60,40 @@ namespace Backend_Goalify.API.Controllers
             await _goalService.DeleteGoalEntryAsync(id);
             return NoContent();
         }
+
+        [HttpPatch("{id}/priority")]
+        public async Task<IActionResult> UpdatePriority(string id, [FromBody] int priority)
+        {
+            await _goalService.UpdateGoalPriorityAsync(id, priority);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/deadline")]
+        public async Task<IActionResult> UpdateDeadline(string id, [FromBody] DateTime deadline)
+        {
+            await _goalService.UpdateGoalDeadlineAsync(id, deadline);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/status")]
+        public async Task<IActionResult> UpdateStatus(string id, [FromBody] string status)
+        {
+            await _goalService.UpdateGoalStatusAsync(id, status);
+            return NoContent();
+        }
+
+        [HttpPatch("{id}/visibility")]
+        public async Task<IActionResult> UpdateVisibility(string id, [FromBody] bool isPublic)
+        {
+            await _goalService.UpdateGoalVisibilityAsync(id, isPublic);
+            return NoContent();
+        }
+
+        [HttpPost("{id}/tags")]
+        public async Task<IActionResult> AddTags(string id, [FromBody] IEnumerable<string> tags)
+        {
+            await _goalService.AddGoalTagsAsync(id, tags);
+            return NoContent();
+        }
     }
 }

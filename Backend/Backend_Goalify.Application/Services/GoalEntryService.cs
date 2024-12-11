@@ -49,5 +49,40 @@ namespace Backend_Goalify.Application.Services
         {
             return await _goalEntryRepository.GetPublicGoalEntriesAsync();
         }
+
+        public async Task UpdateGoalPriorityAsync(string id, int priority)
+        {
+            var goal = await _goalEntryRepository.GetByIdAsync(id);
+            goal.Priority = priority;
+            await _goalEntryRepository.UpdateAsync(goal);
+        }
+
+        public async Task UpdateGoalDeadlineAsync(string id, DateTime deadline)
+        {
+            var goal = await _goalEntryRepository.GetByIdAsync(id);
+            goal.Deadline = deadline;
+            await _goalEntryRepository.UpdateAsync(goal);
+        }
+
+        public async Task UpdateGoalStatusAsync(string id, string status)
+        {
+            var goal = await _goalEntryRepository.GetByIdAsync(id);
+            goal.Status = status;
+            await _goalEntryRepository.UpdateAsync(goal);
+        }
+
+        public async Task UpdateGoalVisibilityAsync(string id, bool isPublic)
+        {
+            var goal = await _goalEntryRepository.GetByIdAsync(id);
+            goal.IsPublic = isPublic;
+            await _goalEntryRepository.UpdateAsync(goal);
+        }
+
+        public async Task AddGoalTagsAsync(string id, IEnumerable<string> tags)
+        {
+            var goal = await _goalEntryRepository.GetByIdAsync(id);
+            goal.Tags.AddRange(tags);
+            await _goalEntryRepository.UpdateAsync(goal);
+        }
     }
-} 
+}
