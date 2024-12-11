@@ -13,5 +13,8 @@ namespace Backend_Goalify.Core.Interfaces
         Task DeleteGoalEntryAsync(string id);
         Task<IEnumerable<GoalEntry>> GetUserGoalEntriesAsync(string userId);
         Task<IEnumerable<GoalEntry>> GetPublicGoalEntriesAsync();
+
+        /*extras
+        */
     }
 } 

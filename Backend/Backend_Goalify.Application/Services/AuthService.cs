@@ -83,7 +83,13 @@ namespace Backend_Goalify.Application.Services
             if (!result.Succeeded)
                 return (false, string.Join(", ", result.Errors.Select(e => e.Description)));
 
-            return (true, "User created successfully");
+            // Assign default Basic role
+            var roleResult = await _userManager.AddToRoleAsync(user, "Basic");
+            
+            if (!roleResult.Succeeded)
+                return (false, "User created but role assignment failed");
+
+            return (true, "User created successfully with Basic role");
         }
 
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend_Goalify.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role,string>
     {
         public DbSet<Comment> Comments { get; set; }
         public DbSet<CommentLikes> CommentLikes { get; set; }
