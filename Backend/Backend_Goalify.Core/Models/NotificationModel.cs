@@ -3,7 +3,7 @@ using Backend_Goalify.Core.Models.Enums;
 
 namespace Backend_Goalify.Core.Models
 {
-    public class Notification : BaseModel
+    public class NotificationModel : BaseModel
     {
         public string Title { get; set; }
         public string Message { get; set; }

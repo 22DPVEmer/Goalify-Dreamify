@@ -1,22 +1,23 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Backend_Goalify.Core.Entities;
+using Backend_Goalify.Core.Models;
+using Backend_Goalify.Core.Models.Enums;
 
 namespace Backend_Goalify.Core.Interfaces
 {
     public interface IGoalEntryService
     {
-        Task<IEnumerable<GoalEntry>> GetAllGoalEntriesAsync();
-        Task<GoalEntry> GetGoalEntryByIdAsync(string id);
-        Task<GoalEntry> CreateGoalEntryAsync(GoalEntry goalEntry);
-        Task UpdateGoalEntryAsync(GoalEntry goalEntry);
+        Task<IEnumerable<GoalEntryModel>> GetAllGoalEntriesAsync(string userid);
+        Task<GoalEntryModel> GetGoalEntryByIdAsync(string id);
+        Task<GoalEntryModel> CreateGoalEntryAsync(GoalEntryModel goalEntry);
+        Task UpdateGoalEntryAsync(GoalEntryModel goalEntry);
         Task DeleteGoalEntryAsync(string id);
-        Task<IEnumerable<GoalEntry>> GetUserGoalEntriesAsync(string userId);
-        Task<IEnumerable<GoalEntry>> GetPublicGoalEntriesAsync();
+        Task<IEnumerable<GoalEntryModel>> GetUserGoalEntriesAsync(string userId);
+        Task<IEnumerable<GoalEntryModel>> GetPublicGoalEntriesAsync();
 
-        Task UpdateGoalPriorityAsync(string id, int priority);
+        Task UpdateGoalPriorityAsync(string id, GoalPriority priority);
         Task UpdateGoalDeadlineAsync(string id, DateTime deadline);
-        Task UpdateGoalStatusAsync(string id, string status);
+        Task UpdateGoalStatusAsync(string id, GoalStatus status);
         Task UpdateGoalVisibilityAsync(string id, bool isPublic);
         Task AddGoalTagsAsync(string id, IEnumerable<string> tags);
 

@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 namespace Backend_Goalify.Core.Models
 {
     public class UserModel
@@ -13,6 +15,7 @@ namespace Backend_Goalify.Core.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? LastLogin { get; set; }
-        public ICollection<string> Roles { get; set; } = new List<string>();
+        public bool IsBanned { get; set; }
+        public ICollection<IdentityUserRole<string>> UserRoles { get; set; } = new List<IdentityUserRole<string>>();
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Backend_Goalify.Core.Models
 {
-    public class GoalLikes : BaseModel
+    public class GoalLikesModel : BaseModel
     {
         public string UserId { get; set; }
         public string GoalEntryId { get; set; }
         public UserModel User { get; set; }
-        public GoalEntry GoalEntry { get; set; }
+        public GoalEntryModel GoalEntry { get; set; }
     }
 } 
