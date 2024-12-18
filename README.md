@@ -29,7 +29,7 @@ Make sure you have the following installed:
 
 1. Navigate to the backend project directory:
    ```bash
-   cd Backend_Goalify.API
+   cd Backend_Goalify.Infrastructure
    ```
 2. Apply database migrations:
    ```
