@@ -30,6 +30,7 @@
 *.swp
 *.swo
 *~
+**/Migrations/
 
 # OS files
 .DS_Store

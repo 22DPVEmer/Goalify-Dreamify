@@ -3,6 +3,9 @@ using Backend_Goalify.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
+using Backend_Goalify.Core.Entities.Enums;
+using Backend_Goalify.Core.Models.Enums;
+using Backend_Goalify.Core.Models;
 
 namespace Backend_Goalify.API.Controllers
 {
@@ -19,7 +22,7 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GoalEntry>>> GetUserGoals()
+        public async Task<ActionResult<IEnumerable<GoalEntryModel>>> GetUserGoals()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var goals = await _goalService.GetUserGoalEntriesAsync(userId);
@@ -37,7 +40,7 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GoalEntry>> CreateGoal([FromBody] GoalEntry goal)
+        public async Task<ActionResult<GoalEntry>> CreateGoal([FromBody] GoalEntryModel goal)
         {
             goal.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var createdGoal = await _goalService.CreateGoalEntryAsync(goal);
@@ -45,7 +48,7 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateGoal(string id, [FromBody] GoalEntry goal)
+        public async Task<IActionResult> UpdateGoal(string id, [FromBody] GoalEntryModel goal)
         {
             if (id != goal.Id)
                 return BadRequest();
@@ -62,7 +65,7 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpPatch("{id}/priority")]
-        public async Task<IActionResult> UpdatePriority(string id, [FromBody] int priority)
+        public async Task<IActionResult> UpdatePriority(string id, [FromBody] Backend_Goalify.Core.Models.Enums.GoalPriority priority)
         {
             await _goalService.UpdateGoalPriorityAsync(id, priority);
             return NoContent();
@@ -76,7 +79,7 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpPatch("{id}/status")]
-        public async Task<IActionResult> UpdateStatus(string id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(string id, [FromBody] Backend_Goalify.Core.Models.Enums.GoalStatus status)
         {
             await _goalService.UpdateGoalStatusAsync(id, status);
             return NoContent();

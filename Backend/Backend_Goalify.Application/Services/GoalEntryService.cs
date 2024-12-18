@@ -34,9 +34,9 @@ namespace Backend_Goalify.Application.Services
         public async Task<GoalEntryModel> CreateGoalEntryAsync(GoalEntryModel goalEntryModel)
         {
             var entry = _mapper.Map<GoalEntry>(goalEntryModel);
-            var result = await _unitOfWork.GoalEntryRepository.AddAsync(entry);
+            await _unitOfWork.GoalEntryRepository.AddAsync(entry);
             await _unitOfWork.SaveAsync();
-            return _mapper.Map<GoalEntryModel>(result);
+            return _mapper.Map<GoalEntryModel>(entry);
         }
 
         public async Task UpdateGoalEntryAsync(GoalEntryModel goalEntryModel)

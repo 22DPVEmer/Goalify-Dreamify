@@ -1,26 +1,29 @@
 ﻿using Backend_Goalify.Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace Backend_Goalify.Infrastructure.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, Role,string>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole, string>
     {
-        public DbSet<Comment> Comments { get; set; }
-        public DbSet<CommentLikes> CommentLikes { get; set; }
-        public DbSet<GoalEntry> GoalEntries { get; set; }
-        public DbSet<GoalLikes> GoalLikes { get; set; }
-        public DbSet<Tag> Tags { get; set; }
-        public DbSet<Moderator> Moderators { get; set; }
-        public DbSet<Notification> Notifications { get; set; }
-        public DbSet<Message> Messages { get; set; }
-        public DbSet<Chat> Chats { get; set; }
-        public DbSet<Attachment> Attachments { get; set; }
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
+
+        public DbSet<GoalEntry> GoalEntries { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<GoalLikes> GoalLikes { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Attachment> Attachments { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Chat> Chats { get; set; }
+        public DbSet<Moderator> Moderators { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+
+        // Add DbSet for IdentityRole
+        public DbSet<IdentityRole> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,17 +51,6 @@ namespace Backend_Goalify.Infrastructure.Data
                 .WithMany(g => g.Likes)
                 .HasForeignKey(gl => gl.GoalEntryId)
                 .OnDelete(DeleteBehavior.Cascade);
-            builder.Entity<Notification>()
-    .HasOne(n => n.User)
-    .WithMany(u => u.Notifications)
-                .HasForeignKey(n => n.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<GoalLikes>()
-                .HasOne(gl => gl.User)
-                .WithMany(u => u.GoalLikes)
-            .HasForeignKey(gl => gl.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
 
             // Comment relationships
             builder.Entity<Comment>()
@@ -79,33 +71,7 @@ namespace Backend_Goalify.Infrastructure.Data
                 .HasForeignKey(c => c.ParentCommentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // CommentLikes relationships
-            builder.Entity<CommentLikes>()
-                .HasOne(cl => cl.Comment)
-                .WithMany(c => c.CommentLikes)
-                .HasForeignKey(cl => cl.CommentId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<CommentLikes>()
-                .HasOne(cl => cl.User)
-                .WithMany(u => u.CommentLikes)
-                .HasForeignKey(cl => cl.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Tag relationships
-            builder.Entity<Tag>()
-                .HasOne(t => t.GoalEntry)
-                .WithMany(g => g.Tags)
-                .HasForeignKey(t => t.GoalEntryId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<Tag>()
-                .HasOne(t => t.User)
-                .WithMany(u => u.Tags)
-                .HasForeignKey(t => t.UserId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Moderator relationships
+            // Other relationships
             builder.Entity<Moderator>()
                 .HasOne(m => m.GoalEntry)
                 .WithMany()
@@ -118,10 +84,9 @@ namespace Backend_Goalify.Infrastructure.Data
                 .HasForeignKey(m => m.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Chat and Message relationships
             builder.Entity<Chat>()
                 .HasOne(c => c.User1)
-            .WithMany()
+                .WithMany()
                 .HasForeignKey(c => c.User1Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
@@ -143,7 +108,6 @@ namespace Backend_Goalify.Infrastructure.Data
                 .HasForeignKey(m => m.SenderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Attachment relationships
             builder.Entity<Attachment>()
                 .HasOne(a => a.Message)
                 .WithMany(m => m.Attachments)

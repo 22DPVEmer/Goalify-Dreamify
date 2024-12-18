@@ -69,10 +69,9 @@ namespace Backend_Goalify.Application
             CreateMap<Tag, TagModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Color))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
-                .ForMember(dest => dest.Goals, opt => opt.MapFrom(src => src.Goals))
+                .ForMember(dest => dest.Goals, opt => opt.MapFrom(src => src.GoalEntry))
                 .ReverseMap();
         
 

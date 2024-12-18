@@ -2,10 +2,10 @@ using Backend_Goalify.Core.Entities;
 using Backend_Goalify.Core.Interfaces;
 using Backend_Goalify.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-
+/*
 namespace Backend_Goalify.Infrastructure.Repositories
 {
-    public class RoleRepository : Repository<Role>, IRoleRepository
+    public class RoleRepository :  IRoleRepository
     {
         public RoleRepository(ApplicationDbContext context) : base(context)
         {
@@ -42,3 +42,4 @@ namespace Backend_Goalify.Infrastructure.Repositories
         }
     }
 }
+*/

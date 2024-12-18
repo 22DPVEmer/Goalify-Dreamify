@@ -8,22 +8,52 @@ using System.Threading.Tasks;
 
 namespace Backend_Goalify.Infrastructure.Repositories
 {
-    public class GoalEntryRepository : Repository<GoalEntry>, IGoalEntryRepository
+    public class GoalEntryRepository(ApplicationDbContext context) :  IGoalEntryRepository
     {
-        public GoalEntryRepository(ApplicationDbContext context) : base(context)
+        
+
+        public async Task<IEnumerable<GoalEntry>> GetAllAsync()
         {
+            return await context.GoalEntries.ToListAsync();
+        }
+
+        public async Task<GoalEntry> GetByIdAsync(string id)
+        {
+            return await context.GoalEntries.FindAsync(id);
+        }
+
+        public async Task AddAsync(GoalEntry entity)
+        {
+            await context.GoalEntries.AddAsync(entity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(GoalEntry entity)
+        {
+            context.GoalEntries.Update(entity);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(string id)
+        {
+            var entity = await GetByIdAsync(id);
+            if (entity != null)
+            {
+                context.GoalEntries.Remove(entity);
+                await context.SaveChangesAsync();
+            }
         }
 
         public async Task<IEnumerable<GoalEntry>> GetUserGoalEntriesAsync(string userId)
         {
-            return await _dbSet
+            return await context.GoalEntries
                 .Where(g => g.UserId == userId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<GoalEntry>> GetPublicGoalEntriesAsync()
         {
-            return await _dbSet
+            return await context.GoalEntries
                 .Where(g => g.IsPublic)
                 .ToListAsync();
         }

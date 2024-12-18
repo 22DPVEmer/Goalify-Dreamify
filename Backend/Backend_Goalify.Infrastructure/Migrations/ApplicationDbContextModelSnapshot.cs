@@ -423,14 +423,17 @@ namespace Backend_Goalify.Infrastructure.Migrations
 
             modelBuilder.Entity("Backend_Goalify.Core.Entities.Tag", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("GoalEntryId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("TagName")
+                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -650,7 +653,7 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.HasOne("Backend_Goalify.Core.Entities.ApplicationUser", "User")
                         .WithMany("CommentLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Comment");
@@ -680,7 +683,7 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.HasOne("Backend_Goalify.Core.Entities.ApplicationUser", "User")
                         .WithMany("GoalLikes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GoalEntry");
@@ -748,7 +751,7 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.HasOne("Backend_Goalify.Core.Entities.ApplicationUser", "User")
                         .WithMany("Tags")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("GoalEntry");
