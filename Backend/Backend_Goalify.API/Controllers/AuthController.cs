@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using Backend_Goalify.Application.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Backend_Goalify.API.Controllers
 {
@@ -35,14 +36,43 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var result = await _authService.LoginAsync(model);
-            if (!result.success)
-                return Unauthorized(new AuthResponse { Success = false, Message = "Invalid credentials" });
+            var (success, token, user) = await _authService.LoginAsync(model);
+            
+            if (!success)
+                return Unauthorized(new { success = false, message = "Invalid email or password" });
 
-            return Ok(new AuthResponse { Success = true, Token = result.token });
+            // Set auth cookie
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false,  // Set to false for development
+                SameSite = SameSiteMode.Lax,  // Change to Lax for development
+                Expires = DateTime.UtcNow.AddDays(7),
+                Path = "/"  // Add this
+            };
+            Response.Cookies.Append("auth_token", token, cookieOptions);
+
+            // Map user to UserModel and return response
+            var userModel = new UserModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                Email = user.Email,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                IsActive = user.IsActive,
+                IsAdmin = user.IsAdmin
+            };
+
+            return Ok(new { 
+                success = true, 
+                token = token,  // You might want to remove this in production
+                user = userModel
+            });
         }
+        /*
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
@@ -55,6 +85,18 @@ namespace Backend_Goalify.API.Controllers
             
             return Ok(new { Token = result.data.Token, RefreshToken = result.data.RefreshToken });
         }
+        */
+        [HttpGet("check")]
+        public IActionResult CheckAuth()
+        {
+            var token = Request.Cookies["auth_token"];
+            if (string.IsNullOrEmpty(token))
+            {
+                return Unauthorized(new { message = "Not authenticated" });
+            }
+            return Ok(new { message = "Authenticated" });
+        }
+
         /*
         
         [HttpPost("forgot-password")]
@@ -97,6 +139,18 @@ namespace Backend_Goalify.API.Controllers
                 return BadRequest(new { message = result.message });
 
             return Ok(new { message = "Role assigned successfully" });
+        }
+
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete("auth_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            });
+            return Ok(new { message = "Logged out successfully" });
         }
     }
 }

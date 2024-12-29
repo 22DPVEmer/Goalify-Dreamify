@@ -10,27 +10,27 @@ namespace Backend_Goalify.Core.Entities
         public string Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty; // Initialize with empty string
         
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public bool IsPublic { get; set; }
         public DateTime? Deadline { get; set; }
         public bool IsCompleted { get; set; }
-        public GoalStatus Status { get; set; }
-        public GoalPriority Priority { get; set; }
+        public GoalStatus? Status { get; set; }
+        public GoalPriority? Priority { get; set; }
         public bool IsActive { get; set; }
 
         // Foreign key
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         
         // Navigation properties
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
-        public ICollection<GoalLikes> Likes { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; } = new List<Tag>();
+        public ApplicationUser? User { get; set; }
+        public ICollection<GoalLikes>? Likes { get; set; }
+        public ICollection<Comment>? Comments { get; set; }
+        public virtual ICollection<Tag>? Tags { get; set; } = new List<Tag>();
 
         public GoalEntry()
         {

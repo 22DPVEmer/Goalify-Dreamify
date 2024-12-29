@@ -7,9 +7,8 @@ namespace Backend_Goalify.Core.Interfaces
     {
         IGoalEntryRepository GoalEntryRepository { get; }
         
-        Task<bool> SaveAsync();
+        
+        Task SaveAsync();
         Task<IDbContextTransaction> BeginTransactionAsync();
-        Task<bool> CommitAsync(IDbContextTransaction transaction);
-        Task RollbackAsync(IDbContextTransaction transaction);
     }
 }

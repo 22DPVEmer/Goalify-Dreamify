@@ -3,16 +3,19 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import MainPage from "./components/MainPage";
-import ProfilePage from "./components/ProfilePage";
+import Profile from "./components/Profile";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
     <Router>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Register />} />
+        <Route path="/" element={<MainPage />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/main" element={<MainPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );

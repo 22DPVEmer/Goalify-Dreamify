@@ -40,7 +40,7 @@ namespace Backend_Goalify.Application
             // GoalEntry mapping
             CreateMap<GoalEntry, GoalEntryModel>()
                 .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.Deadline))
-                .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
+    
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.IsPublic, opt => opt.MapFrom(src => src.IsPublic))

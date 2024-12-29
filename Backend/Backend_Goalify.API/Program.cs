@@ -1,3 +1,4 @@
+using AutoMapper;
 using Backend_Goalify.Infrastructure.Data;
 using Backend_Goalify.Core.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,8 +11,17 @@ using Backend_Goalify.Application.Services;
 using Microsoft.OpenApi.Models;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.RateLimiting;
+using Backend_Goalify.Core.Interfaces;
+using Backend_Goalify.Application;
+using Backend_Goalify.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add this near the top, before other configurations
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 // Configure database context
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -44,10 +54,26 @@ builder.Services.AddAuthentication(options =>
 {
     options.SaveToken = true;
     options.RequireHttpsMetadata = false;
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var token = context.Request.Cookies["auth_token"];
+            Console.WriteLine($"Token from cookie: {token?.Substring(0, Math.Min(token?.Length ?? 0, 20))}...");
+            if (!string.IsNullOrEmpty(token))
+            {
+                context.Token = token;
+            }
+            return Task.CompletedTask;
+        }
+    };
     options.TokenValidationParameters = new TokenValidationParameters()
     {
         ValidateIssuer = true,
         ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ClockSkew = TimeSpan.Zero,  // Add this line
         ValidAudience = builder.Configuration["JWT:ValidAudience"],
         ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
@@ -55,6 +81,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add services to the container
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -90,7 +117,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp",
         builder => builder
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins("http://localhost:5173") // Your React app's URL
+            .AllowCredentials()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
@@ -98,6 +126,15 @@ builder.Services.AddCors(options =>
 // Add scoped services
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+builder.Services.AddScoped<IGoalEntryService, GoalEntryService>(); // Add this line
+builder.Services.AddScoped<IUserService, UserService>(); // Add this line
+// IUnitOfWork
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Repositories
+builder.Services.AddScoped<IGoalEntryRepository, GoalEntryRepository>();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 // Add Rate Limiting
 builder.Services.AddRateLimiter(options =>

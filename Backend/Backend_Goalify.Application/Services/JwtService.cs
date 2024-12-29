@@ -18,15 +18,28 @@ namespace Backend_Goalify.Application.Services
             _configuration = configuration;
         }
 
+        private List<Claim> CreateClaims(ApplicationUser user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email ?? ""),
+                new Claim(ClaimTypes.Name, user.UserName ?? ""),
+                // Add role claims if needed
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            };
+            return claims;
+        }
+
         public string GenerateToken(ApplicationUser user)
         {
-            var claims = new[]
+            var claims = CreateClaims(user);
+            
+            // Debug claims
+            foreach (var claim in claims)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName)
-            };
+                Console.WriteLine($"Adding claim: {claim.Type} = {claim.Value}");
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -39,7 +52,9 @@ namespace Backend_Goalify.Application.Services
                 signingCredentials: creds
             );
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            Console.WriteLine($"Generated token: {tokenString.Substring(0, Math.Min(tokenString.Length, 50))}...");
+            return tokenString;
         }
     }
-} 
+}

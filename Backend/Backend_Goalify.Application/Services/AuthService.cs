@@ -48,20 +48,22 @@ namespace Backend_Goalify.Application.Services
             return new Result { success = true, data = tokenData }; // Return the Result with TokenData
         }
 
-        public async Task<(bool success, string token)> LoginAsync(LoginModel model)
+        public async Task<(bool success, string token, ApplicationUser user)> LoginAsync(LoginModel model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
-                return (false, null);
+                return (false, null!, null!);
 
             user.LastLogin = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
+            user = await _userManager.FindByIdAsync(user.Id);
+
             var token = _jwtService.GenerateToken(user);
-            return (true, token);
+            return (true, token, user);
         }
 
-        public async Task<(bool success, string message)> RegisterAsync(RegisterModel model)
+        public async Task<(bool success, string message)> RegisterAsync(RegisterModel model)  // Return type matches interface
         {
             var existingUser = await _userManager.FindByEmailAsync(model.Email);
             if (existingUser != null)
