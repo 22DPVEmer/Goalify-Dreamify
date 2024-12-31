@@ -1,34 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    // Check authentication status
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
-    try {
-      const response = await fetch("http://localhost:5129/api/auth/check", {
-        credentials: "include",
-      });
-      setIsAuthenticated(response.ok);
-    } catch (error) {
-      setIsAuthenticated(false);
-      console.error("Check auth error:", error);
-    }
-  };
+  const { isAuthenticated, logout } = useAuth();
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:5129/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      setIsAuthenticated(false);
+      await logout();
       navigate("/login");
     } catch (error) {
       console.error("Logout error:", error);

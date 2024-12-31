@@ -1,30 +1,24 @@
 // src/components/Login.tsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { login, checkAuth } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:5129/api/auth/login", {
-        method: "POST",
-        credentials: "include", // Important for cookies
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
+      const success = await login(email, password);
+      if (success) {
+        await checkAuth(); // Update authentication status
         navigate("/main");
       } else {
-        alert(data.message);
+        alert("Login failed");
       }
     } catch (error) {
       console.error("Login error:", error);

@@ -5,18 +5,21 @@ import Register from "./components/Register";
 import MainPage from "./components/MainPage";
 import Profile from "./components/Profile";
 import Navbar from "./components/Navbar";
+import { AuthProvider } from "./contexts/AuthContext";
 
 const App = () => {
   return (
     <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<MainPage />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
+      <AuthProvider>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/profile" element={<Profile />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 };

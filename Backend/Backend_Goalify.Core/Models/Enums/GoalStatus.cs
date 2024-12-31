@@ -8,4 +8,4 @@ namespace Backend_Goalify.Core.Models.Enums
         OnHold,
         Cancelled
     }
-} 
+}

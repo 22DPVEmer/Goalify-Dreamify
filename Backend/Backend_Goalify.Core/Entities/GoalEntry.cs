@@ -7,7 +7,7 @@ namespace Backend_Goalify.Core.Entities
     public class GoalEntry
     {
         [Key]
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string? Id { get; set; } = Guid.NewGuid().ToString();
         
         [Required]
         public string Title { get; set; } = string.Empty; // Initialize with empty string
@@ -37,7 +37,7 @@ namespace Backend_Goalify.Core.Entities
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             IsActive = true;
-            Status = GoalStatus.NotStarted;
+            //Status = GoalStatus.NotStarted;
             Priority = GoalPriority.Medium;
             Likes = new HashSet<GoalLikes>();
             Comments = new HashSet<Comment>();

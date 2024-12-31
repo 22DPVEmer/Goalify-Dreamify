@@ -40,11 +40,89 @@ namespace Backend_Goalify.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<GoalEntry>> CreateGoal([FromBody] GoalEntryModel goal)
+        public async Task<ActionResult<GoalEntry>> CreateGoal([FromBody] Dictionary<string, object> goalData)
         {
-            goal.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var createdGoal = await _goalService.CreateGoalEntryAsync(goal);
-            return CreatedAtAction(nameof(GetGoal), new { id = createdGoal.Id }, createdGoal);
+            try 
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized(new { message = "User not authenticated" });
+                }
+
+                var goal = new GoalEntryModel();
+                
+                // Set system-managed properties with UTC dates
+                goal.Id = Guid.NewGuid().ToString();
+                goal.UserId = userId;
+                goal.CreatedAt = DateTime.UtcNow;
+                goal.UpdatedAt = DateTime.UtcNow;
+                goal.IsActive = true;
+                goal.Status = Core.Models.Enums.GoalStatus.InProgress; // Set default status
+
+                // Set user-provided properties with validation
+                if (!goalData.TryGetValue("title", out var titleObj) || string.IsNullOrEmpty(titleObj?.ToString()))
+                {
+                    return BadRequest(new { message = "Title is required" });
+                }
+                goal.Title = titleObj.ToString();
+
+                if (goalData.TryGetValue("description", out var descObj))
+                {
+                    goal.Description = descObj?.ToString();
+                }
+
+                if (goalData.TryGetValue("isPublic", out var isPublicObj) && isPublicObj != null)
+                {
+                    if (bool.TryParse(isPublicObj.ToString(), out bool isPublic))
+                    {
+                        goal.IsPublic = isPublic;
+                    }
+                }
+
+                // Handle deadline with explicit UTC conversion
+                if (goalData.TryGetValue("deadline", out var deadlineObj) && deadlineObj != null)
+                {
+                    if (DateTime.TryParse(deadlineObj.ToString(), out DateTime deadline))
+                    {
+                        // Convert to UTC if not already
+                        goal.DueDate = deadline.Kind != DateTimeKind.Utc 
+                            ? DateTime.SpecifyKind(deadline, DateTimeKind.Utc)
+                            : deadline;
+                    }
+                }
+
+                // Handle priority as string and parse to enum
+                if (goalData.TryGetValue("priority", out var priorityObj) && priorityObj != null)
+                {
+                    var priorityStr = priorityObj.ToString().Trim();
+                    if (Enum.TryParse<Backend_Goalify.Core.Models.Enums.GoalPriority>(priorityStr, true, out var priority))
+                    {
+                        goal.Priority = priority;
+                    }
+                    else
+                    {
+                        var validPriorities = string.Join(", ", Enum.GetNames(typeof(Backend_Goalify.Core.Models.Enums.GoalPriority)));
+                        return BadRequest(new { message = $"Invalid priority value. Valid values are: {validPriorities}" });
+                    }
+                }
+
+                // Handle status if provided
+                if (goalData.TryGetValue("status", out var statusObj) && statusObj != null)
+                {
+                    if (Enum.TryParse<Core.Models.Enums.GoalStatus>(statusObj.ToString(), true, out var status))
+                    {
+                        goal.Status = status;
+                    }
+                }
+
+                var createdGoal = await _goalService.CreateGoalEntryAsync(goal);
+                return CreatedAtAction(nameof(GetGoal), new { id = createdGoal.Id }, createdGoal);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error creating goal", error = ex.Message });
+            }
         }
 
         [HttpPut("{id}")]

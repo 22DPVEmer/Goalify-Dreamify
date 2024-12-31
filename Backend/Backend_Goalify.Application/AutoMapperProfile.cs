@@ -39,6 +39,7 @@ namespace Backend_Goalify.Application
 
             // GoalEntry mapping
             CreateMap<GoalEntry, GoalEntryModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.Deadline))
     
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
@@ -49,9 +50,9 @@ namespace Backend_Goalify.Application
                 .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags))
                 .ForMember(dest => dest.Comments, opt => opt.MapFrom(src => src.Comments))
                 .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes))
-                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => (Core.Models.Enums.GoalPriority)src.Priority))
-                .ReverseMap()
-                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => (Core.Entities.Enums.GoalPriority)src.Priority));
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+                .ReverseMap();
 
             // Comment mapping
             CreateMap<Comment, CommentModel>()
