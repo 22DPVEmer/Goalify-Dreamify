@@ -19,7 +19,10 @@ namespace Backend_Goalify.Infrastructure.Repositories
 
         public async Task<GoalEntry> GetByIdAsync(string id)
         {
-            return await context.GoalEntries.FindAsync(id);
+            return await context.GoalEntries
+                .Include(g => g.Tags)
+                .Include(g => g.User)
+                .FirstOrDefaultAsync(g => g.Id == id);
         }
 
         public async Task AddAsync(GoalEntry entity)
@@ -47,15 +50,22 @@ namespace Backend_Goalify.Infrastructure.Repositories
         public async Task<IEnumerable<GoalEntry>> GetUserGoalEntriesAsync(string userId)
         {
             return await context.GoalEntries
+                .Include(g => g.Tags)
+                .Include(g => g.User)
                 .Where(g => g.UserId == userId)
+                .Where(g => g.Tags.Any(t => t.UserId == userId) || g.UserId == userId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<GoalEntry>> GetPublicGoalEntriesAsync()
         {
             return await context.GoalEntries
+                .Include(g => g.Tags)
+                .Include(g => g.User)
                 .Where(g => g.IsPublic)
                 .ToListAsync();
         }
+
+
     }
-} 
+}

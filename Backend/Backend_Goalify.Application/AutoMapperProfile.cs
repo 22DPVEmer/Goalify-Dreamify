@@ -72,7 +72,7 @@ namespace Backend_Goalify.Application
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
-                .ForMember(dest => dest.Goals, opt => opt.MapFrom(src => src.GoalEntry))
+                .ForMember(dest => dest.GoalEntry, opt => opt.MapFrom(src => src.GoalEntry))
                 .ReverseMap();
         
 

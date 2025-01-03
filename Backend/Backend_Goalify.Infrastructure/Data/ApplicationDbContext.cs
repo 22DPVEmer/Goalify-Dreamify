@@ -21,6 +21,7 @@ namespace Backend_Goalify.Infrastructure.Data
         public DbSet<Chat> Chats { get; set; }
         public DbSet<Moderator> Moderators { get; set; }
         public DbSet<Notification> Notifications { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         // Add DbSet for IdentityRole
         public DbSet<IdentityRole> Roles { get; set; }
@@ -37,6 +38,26 @@ namespace Backend_Goalify.Infrastructure.Data
             builder.Entity<GoalEntry>()
                 .Property(g => g.Priority)
                 .HasConversion<string>();
+            
+            builder.Entity<GoalEntry>()
+             .HasMany(g => g.Tags)
+             .WithMany(t => t.Goals)
+             .UsingEntity(j => 
+             {
+                 j.ToTable("GoalEntryTags");
+                 j.Property("GoalEntriesId").HasColumnName("GoalEntryId");
+                 j.Property("TagsId").HasColumnName("TagId");
+             });
+
+            builder.Entity<GoalEntry>()
+                .HasMany(g => g.Categories)
+                .WithMany(c => c.Goals)
+                .UsingEntity(j => 
+                {
+                    j.ToTable("GoalEntryCategories");
+                    j.Property("GoalEntriesId").HasColumnName("GoalEntryId");
+                    j.Property("CategoriesId").HasColumnName("CategoryId");
+                });
 
             // GoalEntry relationships
             builder.Entity<GoalEntry>()

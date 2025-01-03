@@ -19,9 +19,7 @@ namespace Backend_Goalify.Core.Interfaces
         Task UpdateGoalDeadlineAsync(string id, DateTime deadline);
         Task UpdateGoalStatusAsync(string id, GoalStatus status);
         Task UpdateGoalVisibilityAsync(string id, bool isPublic);
-        Task AddGoalTagsAsync(string id, IEnumerable<string> tags);
+        Task AddGoalTagsAsync(string goalId, string userId, IEnumerable<string> tagNames);
 
-        /*extras
-        */
     }
 }

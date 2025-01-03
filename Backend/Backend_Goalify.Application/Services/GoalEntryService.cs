@@ -96,21 +96,27 @@ namespace Backend_Goalify.Application.Services
             await _unitOfWork.SaveAsync();
         }
 
-        public async Task AddGoalTagsAsync(string id, IEnumerable<string> tags)
+        public async Task AddGoalTagsAsync(string goalId, string userId, IEnumerable<string> tagNames)
         {
-            var entry = await _unitOfWork.GoalEntryRepository.GetByIdAsync(id);
+            var entry = await _unitOfWork.GoalEntryRepository.GetByIdAsync(goalId);
             if (entry == null)
             {
                 throw new KeyNotFoundException("Goal entry not found.");
             }
 
-            foreach (var tagName in tags)
+            foreach (var tagName in tagNames)
             {
-                var tag = new Tag { Name = tagName };
-                entry.Tags.Add(tag);
+                var tag = new Tag 
+                { 
+                    Id = Guid.NewGuid().ToString(),
+                    Name = tagName,
+                    UserId = userId,
+                    GoalEntryId = goalId,
+
+                };
+                await _unitOfWork.TagRepository.AddAsync(tag);
             }
 
-            await _unitOfWork.GoalEntryRepository.UpdateAsync(entry);
             await _unitOfWork.SaveAsync();
         }
     }

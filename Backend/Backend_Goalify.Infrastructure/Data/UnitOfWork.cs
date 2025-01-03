@@ -12,13 +12,17 @@ namespace Backend_Goalify.Infrastructure.Repositories
 
         public UnitOfWork(
             ApplicationDbContext context,
-            IGoalEntryRepository goalEntryRepository){
+            IGoalEntryRepository goalEntryRepository,
+            ITagRepository tagRepository){
 
             _context = context;
             GoalEntryRepository = goalEntryRepository;
+            TagRepository = tagRepository;
+
         }
         
     public IGoalEntryRepository GoalEntryRepository { get; }
+    public ITagRepository TagRepository { get; }
 
     public Task SaveAsync()
     {

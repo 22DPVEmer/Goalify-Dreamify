@@ -31,17 +31,18 @@ namespace Backend_Goalify.Core.Entities
         public ICollection<GoalLikes>? Likes { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public virtual ICollection<Tag>? Tags { get; set; } = new List<Tag>();
+        public virtual ICollection<Category>? Categories { get; set; } = new List<Category>();
 
         public GoalEntry()
         {
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
             IsActive = true;
-            //Status = GoalStatus.NotStarted;
             Priority = GoalPriority.Medium;
             Likes = new HashSet<GoalLikes>();
             Comments = new HashSet<Comment>();
             Tags = new HashSet<Tag>();
+            Categories = new HashSet<Category>();
         }
     }
 }

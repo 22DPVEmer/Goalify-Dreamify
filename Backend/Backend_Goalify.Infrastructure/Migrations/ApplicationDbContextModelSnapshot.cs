@@ -265,7 +265,6 @@ namespace Backend_Goalify.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -278,11 +277,9 @@ namespace Backend_Goalify.Infrastructure.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Priority")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Status")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -293,7 +290,6 @@ namespace Backend_Goalify.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -423,11 +419,8 @@ namespace Backend_Goalify.Infrastructure.Migrations
 
             modelBuilder.Entity("Backend_Goalify.Core.Entities.Tag", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
 
                     b.Property<string>("GoalEntryId")
                         .IsRequired()
@@ -666,8 +659,7 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.HasOne("Backend_Goalify.Core.Entities.ApplicationUser", "User")
                         .WithMany("GoalEntries")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("User");
                 });

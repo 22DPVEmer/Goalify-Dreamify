@@ -6,5 +6,6 @@ namespace Backend_Goalify.Core.Interfaces{
     {
         Task<IEnumerable<GoalEntry>> GetUserGoalEntriesAsync(string userId);
         Task<IEnumerable<GoalEntry>> GetPublicGoalEntriesAsync();
+
     } 
 }

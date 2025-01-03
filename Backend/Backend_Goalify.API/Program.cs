@@ -82,7 +82,12 @@ builder.Services.AddAuthentication(options =>
 
 // Add services to the container
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.WriteIndented = true;
+    });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -132,6 +137,7 @@ builder.Services.AddScoped<IUserService, UserService>(); // Add this line
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Repositories
 builder.Services.AddScoped<IGoalEntryRepository, GoalEntryRepository>();
+builder.Services.AddScoped<ITagRepository, TagRepository>();  // Add this line
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

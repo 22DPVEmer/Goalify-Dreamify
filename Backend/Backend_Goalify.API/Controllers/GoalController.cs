@@ -170,11 +170,28 @@ namespace Backend_Goalify.API.Controllers
             return NoContent();
         }
 
-        [HttpPost("{id}/tags")]
-        public async Task<IActionResult> AddTags(string id, [FromBody] IEnumerable<string> tags)
+        [HttpPost("{goalId}/tags")]
+        public async Task<IActionResult> AddTags(string goalId, [FromBody] IEnumerable<string> tags)
         {
-            await _goalService.AddGoalTagsAsync(id, tags);
-            return NoContent();
+            try
+            {
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
+
+                if (!tags?.Any() ?? true)
+                    return BadRequest("No tags provided");
+
+                await _goalService.AddGoalTagsAsync(goalId, userId, tags);
+                return Ok(new { message = "Tags added successfully" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
+
+
+        
     }
 }

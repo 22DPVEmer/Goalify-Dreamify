@@ -55,12 +55,16 @@ const apiService = {
     });
   },
 
-  addTags: async (id, tags) => {
-    await axios.post(`${API_URL}/goal/${id}/tags`, tags, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+  addTags: async (goalId, userId, tags) => {
+    await axios.post(
+      `${API_URL}/goal/${goalId}/tags`,
+      { userId, tags },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
   },
 };
 
