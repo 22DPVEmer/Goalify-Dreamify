@@ -37,7 +37,7 @@ Make sure you have the following installed:
    ```
 3. Add a new migration (if needed):
    ```
-   dotnet ef migrations add <MigrationName> --startup-project ../Backend_Goalify.API
+   dotnet ef migrations add MigrationName --startup-project ../Backend_Goalify.API
    ```
 4. Run the backend server:
    ```
