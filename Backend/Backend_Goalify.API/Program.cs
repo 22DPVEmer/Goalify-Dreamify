@@ -138,6 +138,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // Repositories
 builder.Services.AddScoped<IGoalEntryRepository, GoalEntryRepository>();
 builder.Services.AddScoped<ITagRepository, TagRepository>();  // Add this line
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));

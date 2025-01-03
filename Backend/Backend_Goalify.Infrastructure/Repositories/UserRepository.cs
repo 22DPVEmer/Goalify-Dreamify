@@ -3,78 +3,61 @@ using Backend_Goalify.Infrastructure.Data;
 using Backend_Goalify.Core.Entities;
 using Backend_Goalify.Core.Exceptions;
 using Backend_Goalify.Core.Interfaces;
-namespace SisyphusChat.Infrastructure.Repositories;
 
-public class UserRepository(ApplicationDbContext context) : IUserRepository
+namespace Backend_Goalify.Infrastructure.Repositories
 {
-    public async Task AddAsync(ApplicationUser entity)
+    public class UserRepository : IUserRepository
     {
-        await context.Users.AddAsync(entity);
-        await context.SaveChangesAsync();
-    }
+        private readonly ApplicationDbContext _context;
 
-    public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
-    {
-        return await context.Users.ToListAsync();
-    }
-
-    public async Task<ApplicationUser> GetByIdAsync(string id)
-    {
-        var user = await context.Users
-            .FirstOrDefaultAsync(g => g.Id == id);
-
-        if (user == null)
+        public UserRepository(ApplicationDbContext context)
         {
-            throw new EntityNotFoundException("Entity not found");
+            _context = context;
         }
 
-        return user;
-    }
-
-    public async Task<ApplicationUser> GetByUsernameAsync(string userName)
-    {
-        var user = await context.Users
-            .FirstOrDefaultAsync(g => g.UserName == userName);
-
-
-        return user;
-    }
-
-    public async Task DeleteAsync(string id)
-    {
-        var user = await context.Users.FindAsync(id);
-
-        if (user == null)
+        public async Task<IEnumerable<ApplicationUser>> GetAllAsync()
         {
-            throw new EntityNotFoundException("Entity not found");
+            return await _context.Users.ToListAsync();
         }
 
-        context.Users.Remove(user);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task UpdateAsync(ApplicationUser entity)
-    {
-        
-        if (entity == null)
+        public async Task<ApplicationUser> GetByIdAsync(string id)
         {
-            throw new EntityNotFoundException("Entity not found");
+            return await _context.Users.FindAsync(id) 
+                ?? throw new EntityNotFoundException($"User with ID {id} not found");
         }
 
-        context.Users.Update(entity);
-        await context.SaveChangesAsync();
-    }
-
-    public async Task<ApplicationUser> GetUserByChatIdAsync(string chatId)
-    {
-        var user = await context.Users
-            .FirstOrDefaultAsync();
-
-        if (user == null)
+        public async Task<ApplicationUser> GetByUsernameAsync(string username)
         {
-            throw new EntityNotFoundException($"User with chat id: {chatId} is not found");
+            return await _context.Users.FirstOrDefaultAsync(u => u.UserName == username);
         }
 
-        return user;
+        public async Task AddAsync(ApplicationUser entity)
+        {
+            await _context.Users.AddAsync(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(ApplicationUser entity)
+        {
+            _context.Users.Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(string id)
+        {
+            var user = await GetByIdAsync(id);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<ApplicationUser> GetUserByChatIdAsync(string chatId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == chatId);
+            if (user == null)
+            {
+                throw new EntityNotFoundException($"User with chat id: {chatId} is not found");
+            }
+            return user;
+        }
     }
 }

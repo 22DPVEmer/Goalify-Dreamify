@@ -7,12 +7,11 @@ namespace Backend_Goalify.Core.Models
     public class TagModel : BaseModel
     {
         public string Name { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public int UsageCount { get; set; }
 
-        public string GoalEntryId { get; set; }
-        public UserModel User { get; set; }
-
-        public GoalEntryModel GoalEntry { get; set; }
-        //public ICollection<GoalEntryModel> Goals { get; set; }
+        public UserModel? User { get; set; }
+        public ICollection<GoalEntryModel> Goals { get; set; } = new List<GoalEntryModel>();
     }
 } 

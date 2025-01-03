@@ -41,7 +41,6 @@ namespace Backend_Goalify.Application
             CreateMap<GoalEntry, GoalEntryModel>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.DueDate, opt => opt.MapFrom(src => src.Deadline))
-    
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
                 .ForMember(dest => dest.IsPublic, opt => opt.MapFrom(src => src.IsPublic))
@@ -52,6 +51,7 @@ namespace Backend_Goalify.Application
                 .ForMember(dest => dest.Likes, opt => opt.MapFrom(src => src.Likes))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+                .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Categories))
                 .ReverseMap();
 
             // Comment mapping
@@ -71,8 +71,10 @@ namespace Backend_Goalify.Application
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+                .ForMember(dest => dest.UsageCount, opt => opt.MapFrom(src => src.UsageCount))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
-                .ForMember(dest => dest.GoalEntry, opt => opt.MapFrom(src => src.GoalEntry))
+                .ForMember(dest => dest.Goals, opt => opt.MapFrom(src => src.Goals))
                 .ReverseMap();
         
 
@@ -83,6 +85,15 @@ namespace Backend_Goalify.Application
                 .ForMember(dest => dest.GoalEntryId, opt => opt.MapFrom(src => src.GoalEntryId))
                 .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
                 .ForMember(dest => dest.GoalEntry, opt => opt.MapFrom(src => src.GoalEntry))
+                .ReverseMap();
+
+            // Category mapping
+            CreateMap<Category, CategoryModel>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+                .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ReverseMap();
         }
     }

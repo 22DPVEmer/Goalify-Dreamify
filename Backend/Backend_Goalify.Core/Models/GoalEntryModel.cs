@@ -16,5 +16,6 @@ namespace Backend_Goalify.Core.Models
         public bool IsPublic { get; set; }
         public bool IsCompleted { get; set; }
         public bool IsActive { get; set; }
+        public virtual ICollection<CategoryModel> Categories { get; set; } = new HashSet<CategoryModel>();
     }
 }

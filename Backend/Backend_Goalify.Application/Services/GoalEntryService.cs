@@ -106,15 +106,27 @@ namespace Backend_Goalify.Application.Services
 
             foreach (var tagName in tagNames)
             {
-                var tag = new Tag 
-                { 
-                    Id = Guid.NewGuid().ToString(),
-                    Name = tagName,
-                    UserId = userId,
-                    GoalEntryId = goalId,
+                // Try to find existing tag first
+                var existingTag = await _unitOfWork.TagRepository.FindByNameAsync(tagName);
+                
+                if (existingTag == null)
+                {
+                    // Create new tag if it doesn't exist
+                    existingTag = new Tag 
+                    { 
+                        Name = tagName,
+                        UserId = userId,
+                        UsageCount = 1
+                    };
+                    await _unitOfWork.TagRepository.AddAsync(existingTag);
+                }
+                else
+                {
+                    existingTag.UsageCount++;
+                }
 
-                };
-                await _unitOfWork.TagRepository.AddAsync(tag);
+                // Add the tag to the goal's tags collection
+                entry.Tags.Add(existingTag);
             }
 
             await _unitOfWork.SaveAsync();

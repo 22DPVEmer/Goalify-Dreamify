@@ -9,24 +9,25 @@ namespace Backend_Goalify.Core.Entities
     public class Tag
     {
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        
+        [Required]
         public string Name { get; set; }
-
         public DateTime CreatedAt { get; set; }
-
+        public string? UserId { get; set; }
         public int UsageCount { get; set; }
 
+        [ForeignKey("UserId")]
+        public virtual ApplicationUser? User { get; set; }
 
-        // Foreign key for GoalEntry
-        public string GoalEntryId { get; set; }
-        [ForeignKey("GoalEntryId")]
-        [JsonIgnore]
-        public GoalEntry GoalEntry { get; set; }
+        // Many-to-many relationship
+        public virtual ICollection<GoalEntry> Goals { get; set; }
 
-        public string UserId { get; set; }
-        [ForeignKey("CreatedById")]
-        public ApplicationUser User { get; set; }
-
-        public ICollection<GoalEntry> Goals { get; set; }
+        public Tag()
+        {
+            Id = Guid.NewGuid().ToString();
+            CreatedAt = DateTime.UtcNow;
+            Goals = new HashSet<GoalEntry>();
+        }
     }
 }

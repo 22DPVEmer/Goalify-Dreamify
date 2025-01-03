@@ -39,25 +39,48 @@ namespace Backend_Goalify.Infrastructure.Data
                 .Property(g => g.Priority)
                 .HasConversion<string>();
             
+            // Configure many-to-many relationship between GoalEntry and Tag
             builder.Entity<GoalEntry>()
-             .HasMany(g => g.Tags)
-             .WithMany(t => t.Goals)
-             .UsingEntity(j => 
-             {
-                 j.ToTable("GoalEntryTags");
-                 j.Property("GoalEntriesId").HasColumnName("GoalEntryId");
-                 j.Property("TagsId").HasColumnName("TagId");
-             });
+                .HasMany(g => g.Tags)
+                .WithMany(t => t.Goals)
+                .UsingEntity<Dictionary<string, object>>(
+                    "GoalEntryTags",
+                    j => j.HasOne<Tag>()
+                        .WithMany()
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<GoalEntry>()
+                        .WithMany()
+                        .HasForeignKey("GoalEntryId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j =>
+                    {
+                        j.Property<string>("GoalEntryId").IsRequired();
+                        j.Property<string>("TagId").IsRequired();
+                        j.HasKey("GoalEntryId", "TagId");
+                    }
+                );
 
             builder.Entity<GoalEntry>()
                 .HasMany(g => g.Categories)
                 .WithMany(c => c.Goals)
-                .UsingEntity(j => 
-                {
-                    j.ToTable("GoalEntryCategories");
-                    j.Property("GoalEntriesId").HasColumnName("GoalEntryId");
-                    j.Property("CategoriesId").HasColumnName("CategoryId");
-                });
+                .UsingEntity<Dictionary<string, object>>(
+                    "GoalEntryCategories",
+                    j => j.HasOne<Category>()
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<GoalEntry>()
+                        .WithMany()
+                        .HasForeignKey("GoalEntryId")
+                        .OnDelete(DeleteBehavior.Cascade),
+                    j =>
+                    {
+                        j.Property<string>("GoalEntryId").IsRequired();
+                        j.Property<string>("CategoryId").IsRequired();
+                        j.HasKey("GoalEntryId", "CategoryId");
+                    }
+                );
 
             // GoalEntry relationships
             builder.Entity<GoalEntry>()

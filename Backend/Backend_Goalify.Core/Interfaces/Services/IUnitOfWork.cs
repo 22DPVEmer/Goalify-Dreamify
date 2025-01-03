@@ -7,6 +7,7 @@ namespace Backend_Goalify.Core.Interfaces
     {
         IGoalEntryRepository GoalEntryRepository { get; }
         ITagRepository TagRepository { get; }
+        IUserRepository UserRepository { get; }
         
         
         

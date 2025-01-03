@@ -47,7 +47,6 @@ namespace Backend_Goalify.Infrastructure.Repositories
 
         public async Task UpdateAsync(Tag entity)
         {
-            
             if (entity == null)
             {
                 throw new EntityNotFoundException("Entity not found");
@@ -56,6 +55,11 @@ namespace Backend_Goalify.Infrastructure.Repositories
             context.Tags.Update(entity);
             await context.SaveChangesAsync();
         }
-    }
 
+        public async Task<Tag?> FindByNameAsync(string name)
+        {
+            return await context.Tags
+                .FirstOrDefaultAsync(t => t.Name.ToLower() == name.ToLower());
+        }
+    }
 }

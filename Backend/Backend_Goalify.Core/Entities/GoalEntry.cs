@@ -30,8 +30,8 @@ namespace Backend_Goalify.Core.Entities
         public ApplicationUser? User { get; set; }
         public ICollection<GoalLikes>? Likes { get; set; }
         public ICollection<Comment>? Comments { get; set; }
-        public virtual ICollection<Tag>? Tags { get; set; } = new List<Tag>();
-        public virtual ICollection<Category>? Categories { get; set; } = new List<Category>();
+        public virtual ICollection<Tag> Tags { get; set; } = new HashSet<Tag>();
+        public virtual ICollection<Category> Categories { get; set; } = new HashSet<Category>();
 
         public GoalEntry()
         {

@@ -161,6 +161,29 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.ToTable("Attachments");
                 });
 
+            modelBuilder.Entity("Backend_Goalify.Core.Entities.Category", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("Backend_Goalify.Core.Entities.Chat", b =>
                 {
                     b.Property<string>("Id")
@@ -422,25 +445,54 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("GoalEntryId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UsageCount")
+                        .HasColumnType("integer");
+
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GoalEntryId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("Tags");
+                });
+
+            modelBuilder.Entity("GoalEntryCategories", b =>
+                {
+                    b.Property<string>("GoalEntryId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CategoryId")
+                        .HasColumnType("text");
+
+                    b.HasKey("GoalEntryId", "CategoryId");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("GoalEntryCategories");
+                });
+
+            modelBuilder.Entity("GoalEntryTags", b =>
+                {
+                    b.Property<string>("GoalEntryId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TagId")
+                        .HasColumnType("text");
+
+                    b.HasKey("GoalEntryId", "TagId");
+
+                    b.HasIndex("TagId");
+
+                    b.ToTable("GoalEntryTags");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -734,21 +786,41 @@ namespace Backend_Goalify.Infrastructure.Migrations
 
             modelBuilder.Entity("Backend_Goalify.Core.Entities.Tag", b =>
                 {
-                    b.HasOne("Backend_Goalify.Core.Entities.GoalEntry", "GoalEntry")
+                    b.HasOne("Backend_Goalify.Core.Entities.ApplicationUser", "User")
                         .WithMany("Tags")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("GoalEntryCategories", b =>
+                {
+                    b.HasOne("Backend_Goalify.Core.Entities.Category", null)
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend_Goalify.Core.Entities.GoalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("GoalEntryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GoalEntryTags", b =>
+                {
+                    b.HasOne("Backend_Goalify.Core.Entities.GoalEntry", null)
+                        .WithMany()
                         .HasForeignKey("GoalEntryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend_Goalify.Core.Entities.ApplicationUser", "User")
-                        .WithMany("Tags")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Backend_Goalify.Core.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("GoalEntry");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -842,8 +914,6 @@ namespace Backend_Goalify.Infrastructure.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("Likes");
-
-                    b.Navigation("Tags");
                 });
 
             modelBuilder.Entity("Backend_Goalify.Core.Entities.Message", b =>
