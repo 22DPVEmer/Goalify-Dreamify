@@ -1,0 +1,5 @@
+1. usage count tags, ja jau eksistējošie tagi, tad neveidot no jauna
+2. tas pats ar category par usage count lai varetu saprast kura category ir visakti lietota
+
+3. get goals, dod visus goals, ne tikai lietotaja goals
+4. nesaglabajas deadline un citas lietas ar goal controller
